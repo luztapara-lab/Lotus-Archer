@@ -243,8 +243,7 @@ setTimeout(() => {
 </html>
 """
 
-    return 
-    render_template_string(html)
+    return render_template_string(html)
 
 
 if __name__ == "__main__":
