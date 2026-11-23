@@ -1,136 +1,255 @@
-
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, send_file
+import os
 
 app = Flask(__name__)
 
+@app.route("/video")
+def video():
+    ruta = os.path.join(
+        os.path.dirname(__file__),
+        "flor de loto.mp4"
+    )
+    return send_file(ruta, mimetype="video/mp4")
+
+
 @app.route("/")
 def inicio():
-    return render_template_string("""
+
+    html = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Lotus Archer</title>
 
 <style>
-body {
-    margin: 0;
-    min-height: 100vh;
-    background: radial-gradient(circle, #54234e, #160d27);
-    color: #ffe5ee;
-    font-family: Georgia, serif;
-    text-align: center;
-    padding: 30px 15px;
+* {
     box-sizing: border-box;
 }
 
+body {
+    margin: 0;
+    background: #160d1b;
+    color: white;
+    font-family: Georgia, serif;
+    overflow-x: hidden;
+}
+
+/* VIDEO */
+.video-fondo {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+/* OSCURECER VIDEO */
+.filtro {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 5, 28, 0.48);
+    z-index: -1;
+}
+
+/* CONTENEDOR */
+.contenedor {
+    min-height: 100vh;
+    width: 100%;
+    padding: 70px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* TITULO */
 h1 {
-    color: #ffb6d0;
-    font-size: 38px;
+    font-size: clamp(27px, 5vw, 45px);
+    color: #ffe5f6;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px #e5a4e9;
+    margin-bottom: 45px;
 }
 
-.subtitulo {
-    color: #f7d7e8;
-    font-style: italic;
-}
-
-.loto {
-    font-size: 110px;
-    margin: 20px;
-    animation: flotar 3s infinite ease-in-out;
-    filter: drop-shadow(0 0 20px #ff91c5);
-}
-
-@keyframes flotar {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-}
-
-.carta {
-    max-width: 520px;
-    margin: auto;
-    padding: 25px;
-    border: 1px solid #ffb6d0;
-    border-radius: 25px;
-    background: #ffffff12;
-    box-shadow: 0 0 25px #ff91c544;
-    line-height: 1.9;
-}
-
+/* POEMA */
 .poema {
-    white-space: pre-line;
-    font-size: 17px;
+    max-width: 850px;
+    font-size: clamp(19px, 3vw, 26px);
+    line-height: 2;
+    color: #fff5ff;
+    text-shadow: 0 0 12px #c88bdc;
 }
 
+/* PALABRAS */
+.palabra {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease,
+                transform 0.8s ease;
+    margin-right: 6px;
+}
+
+.palabra.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* PARRAFOS */
+.parrafo {
+    margin-bottom: 28px;
+}
+
+/* DEDICATORIA */
 .firma {
-    color: #ffb6d0;
-    font-style: italic;
-    margin-top: 25px;
+    margin-top: 45px;
+    font-size: 19px;
+    letter-spacing: 3px;
+    color: #ffd4ef;
+    opacity: 0;
+    transition: opacity 2s ease;
+    padding-bottom: 40px;
 }
 
+.firma.visible {
+    opacity: 1;
+}
+
+@media(max-width: 600px) {
+    .contenedor {
+        padding: 45px 20px;
+    }
+
+    .poema {
+        font-size: 19px;
+        line-height: 1.9;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<h1>Lotus Archer</h1>
+<video class="video-fondo" autoplay muted loop playsinline>
+    <source src="/video" type="video/mp4">
+</video>
 
-<p class="subtitulo">
-Un alma entre flores y estrellas ♐
-</p>
+<div class="filtro"></div>
 
-<div class="loto">🪷</div>
+<div class="contenedor">
 
-<div class="carta">
+<h1>🌸 Lotus Archer: Un alma entre flores y estrellas ♐</h1>
 
-<p class="poema" id="mensaje"></p>
+<div class="poema" id="poema">
 
-<p class="firma">
-Con admiración, entre flores y estrellas. 🌷
-</p>
+<p>Hay personas que parecen llevar fuego en el alma,
+que nacieron para explorar, soñar y perseguir sus destinos.
+Tú eres como Sagitario,
+un arquero que apunta hacia sus sueños
+sin miedo a descubrir nuevos caminos.</p>
+
+<p>Tienes algo de flor de loto,
+porque incluso ante las dificultades
+encuentras la manera de seguir creciendo,
+de levantarte y volver a florecer.</p>
+
+<p>Y algo de tulipán,
+porque tu presencia tiene una belleza particular,
+de esas que no necesitan llamar la atención
+para quedarse grabadas en el corazón.</p>
+
+<p>Admiro tu pasión, tu manera de ser,
+esa libertad que parece acompañar tus pasos.
+Pero hay dos cosas que tienen un encanto especial:
+tus ojos, que podrían contar historias sin palabras,
+y tu sonrisa, que tiene esa magia
+de hacer bonito hasta el momento más sencillo.</p>
+
+<p>Quizás no imaginas cuánto puedo admirarte,
+ni cuántas cosas bonitas puedo encontrar en ti.
+Pero si pudiera regalarte algo,
+sería el deseo de que nunca pierdas tu esencia,
+que sigas apuntando hacia tus sueños
+y que jamás dejes de florecer.</p>
+
+<p>Porque eres arquero por naturaleza,
+libre por espíritu y apasionado por vivir.
+Y como la flor de loto,
+tienes esa manera especial de demostrar
+que incluso en los caminos difíciles
+se puede encontrar la belleza de existir.</p>
+
+<p>Para ti, Lotus Archer:
+que tus flechas siempre encuentren sus sueños,
+que tus raíces nunca olviden su fortaleza
+y que tu alma nunca deje de florecer. 🌷</p>
+
+</div>
+
+<div class="firma" id="firma">
+Con admiración, entre flores y estrellas.
+</div>
 
 </div>
 
 <script>
-const poema = `Hay personas que parecen llevar fuego en el alma,
-que nacieron para explorar, soñar y perseguir sus destinos.
+const poema = document.getElementById("poema");
+const firma = document.getElementById("firma");
 
-Tú eres como Sagitario,
-un arquero que apunta hacia sus sueños
-sin miedo a descubrir nuevos caminos.
+const parrafos = poema.querySelectorAll("p");
 
-Tienes algo de flor de loto,
-porque incluso ante las dificultades
-encuentras la manera de seguir creciendo.
+let tiempo = 0;
 
-Admiro tu pasión y tu manera de ser,
-esa libertad que acompaña tus pasos.
+parrafos.forEach(parrafo => {
 
-Y hay dos detalles que tienen un encanto especial:
-tus ojos, que podrían contar historias sin palabras,
-y tu sonrisa, capaz de iluminar un instante sencillo.
+    const palabras = parrafo.innerText.trim().split(/\\s+/);
+    parrafo.innerHTML = "";
 
-Que tus flechas siempre encuentren sus sueños,
-que tus raíces nunca olviden su fortaleza
-y que tu alma nunca deje de florecer.`;
+    palabras.forEach(palabra => {
 
-let i = 0;
+        const span = document.createElement("span");
+        span.textContent = palabra;
+        span.classList.add("palabra");
 
-function escribir() {
-    if (i < poema.length) {
-        document.getElementById("mensaje").textContent += poema[i];
-        i++;
-        setTimeout(escribir, 45);
-    }
-}
+        parrafo.appendChild(span);
+        parrafo.appendChild(document.createTextNode(" "));
 
-escribir();
+        setTimeout(() => {
+            span.classList.add("visible");
+
+            window.scrollTo({
+                top: span.getBoundingClientRect().top
+                    + window.scrollY
+                    - window.innerHeight / 2,
+                behavior: "smooth"
+            });
+
+        }, tiempo);
+
+        tiempo += 450;
+    });
+
+});
+
+setTimeout(() => {
+    firma.classList.add("visible");
+}, tiempo + 1000);
+
 </script>
 
 </body>
 </html>
+"""
+
+    return render_template_string(html)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
 """)
 
 if __name__ == "__main__":
